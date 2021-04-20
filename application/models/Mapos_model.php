@@ -162,7 +162,7 @@ class Mapos_model extends CI_Model
         $this->db->join('servicos_os', 'servicos_os.os_id = os.idOs', 'left');
         $this->db->where('os.dataFinal >=', $start);
         $this->db->where('os.dataFinal <=', $end);
-        $this->db->group_by('os.idOs');
+        $this->db->group_by('idOs,dataInicial,dataFinal,garantia,descricaoProduto,defeito,status,observacoes,laudoTecnico,valorTotal,clientes_id,usuarios_id,lancamento,faturado,garantias_id,nomeCliente');
 
         if (!empty($status)) {
             $this->db->where('os.status', $status);
@@ -173,7 +173,7 @@ class Mapos_model extends CI_Model
 
     public function getProdutosMinimo()
     {
-        $sql = "SELECT * FROM produtos WHERE estoque <= estoqueMinimo AND estoqueMinimo > 0 LIMIT 10";
+        $sql = "SELECT * FROM produtos WHERE estoque <= estoqueMinimo AND estoqueMinimo > 0 Order By Estoque OFFSET 10 ROWS FETCH NEXT 10 ROWS ONLY";
         return $this->db->query($sql)->result();
     }
 
@@ -202,33 +202,33 @@ class Mapos_model extends CI_Model
         }
 
         $sql = "
-            SELECT
-                SUM(CASE WHEN (EXTRACT(MONTH FROM data_pagamento) = 1) AND baixado = 1 AND tipo = 'receita' THEN valor END) AS VALOR_JAN_REC,
-                SUM(CASE WHEN (EXTRACT(MONTH FROM data_pagamento) = 1) AND baixado = 1 AND tipo = 'despesa' THEN valor END) AS VALOR_JAN_DES,
-                SUM(CASE WHEN (EXTRACT(MONTH FROM data_pagamento) = 2) AND baixado = 1 AND tipo = 'receita' THEN valor END) AS VALOR_FEV_REC,
-                SUM(CASE WHEN (EXTRACT(MONTH FROM data_pagamento) = 2) AND baixado = 1 AND tipo = 'despesa' THEN valor END) AS VALOR_FEV_DES,
-                SUM(CASE WHEN (EXTRACT(MONTH FROM data_pagamento) = 3) AND baixado = 1 AND tipo = 'receita' THEN valor END) AS VALOR_MAR_REC,
-                SUM(CASE WHEN (EXTRACT(MONTH FROM data_pagamento) = 3) AND baixado = 1 AND tipo = 'despesa' THEN valor END) AS VALOR_MAR_DES,
-                SUM(CASE WHEN (EXTRACT(MONTH FROM data_pagamento) = 4) AND baixado = 1 AND tipo = 'receita' THEN valor END) AS VALOR_ABR_REC,
-                SUM(CASE WHEN (EXTRACT(MONTH FROM data_pagamento) = 4) AND baixado = 1 AND tipo = 'despesa' THEN valor END) AS VALOR_ABR_DES,
-                SUM(CASE WHEN (EXTRACT(MONTH FROM data_pagamento) = 5) AND baixado = 1 AND tipo = 'receita' THEN valor END) AS VALOR_MAI_REC,
-                SUM(CASE WHEN (EXTRACT(MONTH FROM data_pagamento) = 5) AND baixado = 1 AND tipo = 'despesa' THEN valor END) AS VALOR_MAI_DES,
-                SUM(CASE WHEN (EXTRACT(MONTH FROM data_pagamento) = 6) AND baixado = 1 AND tipo = 'receita' THEN valor END) AS VALOR_JUN_REC,
-                SUM(CASE WHEN (EXTRACT(MONTH FROM data_pagamento) = 6) AND baixado = 1 AND tipo = 'despesa' THEN valor END) AS VALOR_JUN_DES,
-                SUM(CASE WHEN (EXTRACT(MONTH FROM data_pagamento) = 7) AND baixado = 1 AND tipo = 'receita' THEN valor END) AS VALOR_JUL_REC,
-                SUM(CASE WHEN (EXTRACT(MONTH FROM data_pagamento) = 7) AND baixado = 1 AND tipo = 'despesa' THEN valor END) AS VALOR_JUL_DES,
-                SUM(CASE WHEN (EXTRACT(MONTH FROM data_pagamento) = 8) AND baixado = 1 AND tipo = 'receita' THEN valor END) AS VALOR_AGO_REC,
-                SUM(CASE WHEN (EXTRACT(MONTH FROM data_pagamento) = 8) AND baixado = 1 AND tipo = 'despesa' THEN valor END) AS VALOR_AGO_DES,
-                SUM(CASE WHEN (EXTRACT(MONTH FROM data_pagamento) = 9) AND baixado = 1 AND tipo = 'receita' THEN valor END) AS VALOR_SET_REC,
-                SUM(CASE WHEN (EXTRACT(MONTH FROM data_pagamento) = 9) AND baixado = 1 AND tipo = 'despesa' THEN valor END) AS VALOR_SET_DES,
-                SUM(CASE WHEN (EXTRACT(MONTH FROM data_pagamento) = 10) AND baixado = 1 AND tipo = 'receita' THEN valor END) AS VALOR_OUT_REC,
-                SUM(CASE WHEN (EXTRACT(MONTH FROM data_pagamento) = 10) AND baixado = 1 AND tipo = 'despesa' THEN valor END) AS VALOR_OUT_DES,
-                SUM(CASE WHEN (EXTRACT(MONTH FROM data_pagamento) = 11) AND baixado = 1 AND tipo = 'receita' THEN valor END) AS VALOR_NOV_REC,
-                SUM(CASE WHEN (EXTRACT(MONTH FROM data_pagamento) = 11) AND baixado = 1 AND tipo = 'despesa' THEN valor END) AS VALOR_NOV_DES,
-                SUM(CASE WHEN (EXTRACT(MONTH FROM data_pagamento) = 12) AND baixado = 1 AND tipo = 'receita' THEN valor END) AS VALOR_DEZ_REC,
-                SUM(CASE WHEN (EXTRACT(MONTH FROM data_pagamento) = 12) AND baixado = 1 AND tipo = 'despesa' THEN valor END) AS VALOR_DEZ_DES
-            FROM lancamentos
-            WHERE EXTRACT(YEAR FROM data_pagamento) = ?
+        SELECT 
+            SUM(CASE WHEN MONTH(data_pagamento) = 1 AND baixado = 1 AND tipo = 'receita' THEN valor END) AS VALOR_JAN_REC, 
+            SUM(CASE WHEN MONTH(data_pagamento) = 1 AND baixado = 1 AND tipo = 'despesa' THEN valor END) AS VALOR_JAN_DES, 
+            SUM(CASE WHEN MONTH(data_pagamento) = 2 AND baixado = 1 AND tipo = 'receita' THEN valor END) AS VALOR_FEV_REC, 
+            SUM(CASE WHEN MONTH(data_pagamento) = 2 AND baixado = 1 AND tipo = 'despesa' THEN valor END) AS VALOR_FEV_DES, 
+            SUM(CASE WHEN MONTH(data_pagamento) = 3 AND baixado = 1 AND tipo = 'receita' THEN valor END) AS VALOR_MAR_REC, 
+            SUM(CASE WHEN MONTH(data_pagamento) = 3 AND baixado = 1 AND tipo = 'despesa' THEN valor END) AS VALOR_MAR_DES, 
+            SUM(CASE WHEN MONTH(data_pagamento) = 4 AND baixado = 1 AND tipo = 'receita' THEN valor END) AS VALOR_ABR_REC, 
+            SUM(CASE WHEN MONTH(data_pagamento) = 4 AND baixado = 1 AND tipo = 'despesa' THEN valor END) AS VALOR_ABR_DES,
+            SUM(CASE WHEN MONTH(data_pagamento) = 5 AND baixado = 1 AND tipo = 'receita' THEN valor END) AS VALOR_MAI_REC, 
+            SUM(CASE WHEN MONTH(data_pagamento) = 5 AND baixado = 1 AND tipo = 'despesa' THEN valor END) AS VALOR_MAI_DES, 
+            SUM(CASE WHEN MONTH(data_pagamento) = 6 AND baixado = 1 AND tipo = 'receita' THEN valor END) AS VALOR_JUN_REC, 
+            SUM(CASE WHEN MONTH(data_pagamento) = 6 AND baixado = 1 AND tipo = 'despesa' THEN valor END) AS VALOR_JUN_DES, 
+            SUM(CASE WHEN MONTH(data_pagamento) = 7 AND baixado = 1 AND tipo = 'receita' THEN valor END) AS VALOR_JUL_REC, 
+            SUM(CASE WHEN MONTH(data_pagamento) = 7 AND baixado = 1 AND tipo = 'despesa' THEN valor END) AS VALOR_JUL_DES, 
+            SUM(CASE WHEN MONTH(data_pagamento) = 8 AND baixado = 1 AND tipo = 'receita' THEN valor END) AS VALOR_AGO_REC, 
+            SUM(CASE WHEN MONTH(data_pagamento) = 8 AND baixado = 1 AND tipo = 'despesa' THEN valor END) AS VALOR_AGO_DES, 
+            SUM(CASE WHEN MONTH(data_pagamento) = 9 AND baixado = 1 AND tipo = 'receita' THEN valor END) AS VALOR_SET_REC, 
+            SUM(CASE WHEN MONTH(data_pagamento) = 9 AND baixado = 1 AND tipo = 'despesa' THEN valor END) AS VALOR_SET_DES, 
+            SUM(CASE WHEN MONTH(data_pagamento) = 10 AND baixado = 1 AND tipo = 'receita' THEN valor END) AS VALOR_OUT_REC, 
+            SUM(CASE WHEN MONTH(data_pagamento) = 10 AND baixado = 1 AND tipo = 'despesa' THEN valor END) AS VALOR_OUT_DES, 
+            SUM(CASE WHEN MONTH(data_pagamento) = 11 AND baixado = 1 AND tipo = 'receita' THEN valor END) AS VALOR_NOV_REC, 
+            SUM(CASE WHEN MONTH(data_pagamento) = 11 AND baixado = 1 AND tipo = 'despesa' THEN valor END) AS VALOR_NOV_DES,
+            SUM(CASE WHEN MONTH(data_pagamento) = 12 AND baixado = 1 AND tipo = 'receita' THEN valor END) AS VALOR_DEZ_REC, 
+            SUM(CASE WHEN MONTH(data_pagamento) = 12 AND baixado = 1 AND tipo = 'despesa' THEN valor END) AS VALOR_DEZ_DES 
+        FROM lancamentos 
+        WHERE month(data_pagamento) = ?
         ";
 
         return $this->db->query($sql, [intval($numbersOnly)])->row();
@@ -243,33 +243,33 @@ class Mapos_model extends CI_Model
         }
 
         $sql = "
-            SELECT
-                SUM(CASE WHEN (EXTRACT(MONTH FROM data_pagamento) = 1) AND baixado = 0 AND tipo = 'receita' THEN valor END) AS VALOR_JAN_REC,
-                SUM(CASE WHEN (EXTRACT(MONTH FROM data_pagamento) = 1) AND baixado = 0 AND tipo = 'despesa' THEN valor END) AS VALOR_JAN_DES,
-                SUM(CASE WHEN (EXTRACT(MONTH FROM data_pagamento) = 2) AND baixado = 0 AND tipo = 'receita' THEN valor END) AS VALOR_FEV_REC,
-                SUM(CASE WHEN (EXTRACT(MONTH FROM data_pagamento) = 2) AND baixado = 0 AND tipo = 'despesa' THEN valor END) AS VALOR_FEV_DES,
-                SUM(CASE WHEN (EXTRACT(MONTH FROM data_pagamento) = 3) AND baixado = 0 AND tipo = 'receita' THEN valor END) AS VALOR_MAR_REC,
-                SUM(CASE WHEN (EXTRACT(MONTH FROM data_pagamento) = 3) AND baixado = 0 AND tipo = 'despesa' THEN valor END) AS VALOR_MAR_DES,
-                SUM(CASE WHEN (EXTRACT(MONTH FROM data_pagamento) = 4) AND baixado = 0 AND tipo = 'receita' THEN valor END) AS VALOR_ABR_REC,
-                SUM(CASE WHEN (EXTRACT(MONTH FROM data_pagamento) = 4) AND baixado = 0 AND tipo = 'despesa' THEN valor END) AS VALOR_ABR_DES,
-                SUM(CASE WHEN (EXTRACT(MONTH FROM data_pagamento) = 5) AND baixado = 0 AND tipo = 'receita' THEN valor END) AS VALOR_MAI_REC,
-                SUM(CASE WHEN (EXTRACT(MONTH FROM data_pagamento) = 5) AND baixado = 0 AND tipo = 'despesa' THEN valor END) AS VALOR_MAI_DES,
-                SUM(CASE WHEN (EXTRACT(MONTH FROM data_pagamento) = 6) AND baixado = 0 AND tipo = 'receita' THEN valor END) AS VALOR_JUN_REC,
-                SUM(CASE WHEN (EXTRACT(MONTH FROM data_pagamento) = 6) AND baixado = 0 AND tipo = 'despesa' THEN valor END) AS VALOR_JUN_DES,
-                SUM(CASE WHEN (EXTRACT(MONTH FROM data_pagamento) = 7) AND baixado = 0 AND tipo = 'receita' THEN valor END) AS VALOR_JUL_REC,
-                SUM(CASE WHEN (EXTRACT(MONTH FROM data_pagamento) = 7) AND baixado = 0 AND tipo = 'despesa' THEN valor END) AS VALOR_JUL_DES,
-                SUM(CASE WHEN (EXTRACT(MONTH FROM data_pagamento) = 8) AND baixado = 0 AND tipo = 'receita' THEN valor END) AS VALOR_AGO_REC,
-                SUM(CASE WHEN (EXTRACT(MONTH FROM data_pagamento) = 8) AND baixado = 0 AND tipo = 'despesa' THEN valor END) AS VALOR_AGO_DES,
-                SUM(CASE WHEN (EXTRACT(MONTH FROM data_pagamento) = 9) AND baixado = 0 AND tipo = 'receita' THEN valor END) AS VALOR_SET_REC,
-                SUM(CASE WHEN (EXTRACT(MONTH FROM data_pagamento) = 9) AND baixado = 0 AND tipo = 'despesa' THEN valor END) AS VALOR_SET_DES,
-                SUM(CASE WHEN (EXTRACT(MONTH FROM data_pagamento) = 10) AND baixado = 0 AND tipo = 'receita' THEN valor END) AS VALOR_OUT_REC,
-                SUM(CASE WHEN (EXTRACT(MONTH FROM data_pagamento) = 10) AND baixado = 0 AND tipo = 'despesa' THEN valor END) AS VALOR_OUT_DES,
-                SUM(CASE WHEN (EXTRACT(MONTH FROM data_pagamento) = 11) AND baixado = 0 AND tipo = 'receita' THEN valor END) AS VALOR_NOV_REC,
-                SUM(CASE WHEN (EXTRACT(MONTH FROM data_pagamento) = 11) AND baixado = 0 AND tipo = 'despesa' THEN valor END) AS VALOR_NOV_DES,
-                SUM(CASE WHEN (EXTRACT(MONTH FROM data_pagamento) = 12) AND baixado = 0 AND tipo = 'receita' THEN valor END) AS VALOR_DEZ_REC,
-                SUM(CASE WHEN (EXTRACT(MONTH FROM data_pagamento) = 12) AND baixado = 0 AND tipo = 'despesa' THEN valor END) AS VALOR_DEZ_DES
-            FROM lancamentos
-            WHERE EXTRACT(YEAR FROM data_pagamento) = ?
+        SELECT 
+            SUM(CASE WHEN MONTH(data_pagamento) = 1 AND baixado = 0 AND tipo = 'receita' THEN valor END) AS VALOR_JAN_REC, 
+            SUM(CASE WHEN MONTH(data_pagamento) = 1 AND baixado = 0 AND tipo = 'despesa' THEN valor END) AS VALOR_JAN_DES, 
+            SUM(CASE WHEN MONTH(data_pagamento) = 2 AND baixado = 0 AND tipo = 'receita' THEN valor END) AS VALOR_FEV_REC, 
+            SUM(CASE WHEN MONTH(data_pagamento) = 2 AND baixado = 0 AND tipo = 'despesa' THEN valor END) AS VALOR_FEV_DES, 
+            SUM(CASE WHEN MONTH(data_pagamento) = 3 AND baixado = 0 AND tipo = 'receita' THEN valor END) AS VALOR_MAR_REC, 
+            SUM(CASE WHEN MONTH(data_pagamento) = 3 AND baixado = 0 AND tipo = 'despesa' THEN valor END) AS VALOR_MAR_DES, 
+            SUM(CASE WHEN MONTH(data_pagamento) = 4 AND baixado = 0 AND tipo = 'receita' THEN valor END) AS VALOR_ABR_REC, 
+            SUM(CASE WHEN MONTH(data_pagamento) = 4 AND baixado = 0 AND tipo = 'despesa' THEN valor END) AS VALOR_ABR_DES,
+            SUM(CASE WHEN MONTH(data_pagamento) = 5 AND baixado = 0 AND tipo = 'receita' THEN valor END) AS VALOR_MAI_REC, 
+            SUM(CASE WHEN MONTH(data_pagamento) = 5 AND baixado = 0 AND tipo = 'despesa' THEN valor END) AS VALOR_MAI_DES, 
+            SUM(CASE WHEN MONTH(data_pagamento) = 6 AND baixado = 0 AND tipo = 'receita' THEN valor END) AS VALOR_JUN_REC, 
+            SUM(CASE WHEN MONTH(data_pagamento) = 6 AND baixado = 0 AND tipo = 'despesa' THEN valor END) AS VALOR_JUN_DES, 
+            SUM(CASE WHEN MONTH(data_pagamento) = 7 AND baixado = 0 AND tipo = 'receita' THEN valor END) AS VALOR_JUL_REC, 
+            SUM(CASE WHEN MONTH(data_pagamento) = 7 AND baixado = 0 AND tipo = 'despesa' THEN valor END) AS VALOR_JUL_DES, 
+            SUM(CASE WHEN MONTH(data_pagamento) = 8 AND baixado = 0 AND tipo = 'receita' THEN valor END) AS VALOR_AGO_REC, 
+            SUM(CASE WHEN MONTH(data_pagamento) = 8 AND baixado = 0 AND tipo = 'despesa' THEN valor END) AS VALOR_AGO_DES, 
+            SUM(CASE WHEN MONTH(data_pagamento) = 9 AND baixado = 0 AND tipo = 'receita' THEN valor END) AS VALOR_SET_REC, 
+            SUM(CASE WHEN MONTH(data_pagamento) = 9 AND baixado = 0 AND tipo = 'despesa' THEN valor END) AS VALOR_SET_DES, 
+            SUM(CASE WHEN MONTH(data_pagamento) = 10 AND baixado = 0 AND tipo = 'receita' THEN valor END) AS VALOR_OUT_REC, 
+            SUM(CASE WHEN MONTH(data_pagamento) = 10 AND baixado = 0 AND tipo = 'despesa' THEN valor END) AS VALOR_OUT_DES, 
+            SUM(CASE WHEN MONTH(data_pagamento) = 11 AND baixado = 0 AND tipo = 'receita' THEN valor END) AS VALOR_NOV_REC, 
+            SUM(CASE WHEN MONTH(data_pagamento) = 11 AND baixado = 0 AND tipo = 'despesa' THEN valor END) AS VALOR_NOV_DES,
+            SUM(CASE WHEN MONTH(data_pagamento) = 12 AND baixado = 0 AND tipo = 'receita' THEN valor END) AS VALOR_DEZ_REC, 
+            SUM(CASE WHEN MONTH(data_pagamento) = 12 AND baixado = 0 AND tipo = 'despesa' THEN valor END) AS VALOR_DEZ_DES 
+        FROM lancamentos 
+        WHERE month(data_pagamento) = ?
         ";
 
         return $this->db->query($sql, [intval($numbersOnly)])->row();
