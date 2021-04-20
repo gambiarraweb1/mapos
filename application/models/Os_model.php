@@ -83,7 +83,7 @@ class Os_model extends CI_Model
 
         $this->db->limit($perpage, $start);
         $this->db->order_by('os.idOs', 'desc');
-        $this->db->group_by('os.idOs');
+        $this->db->group_by('idOs,dataInicial,dataFinal,garantia,descricaoProduto,defeito,status,observacoes,laudoTecnico,valorTotal,clientes_id,os.usuarios_id,lancamento,faturado,garantias_id,nomeCliente,clientes.celular,nome,idGarantias,dataGarantia,refGarantia,textoGarantia, garantias.usuarios_id');
 
         $query = $this->db->get();
 
