@@ -142,14 +142,31 @@ class Os_model extends CI_Model
     public function add($table, $data, $returnId = false)
     {
         $this->db->insert($table, $data);
-        if ($this->db->affected_rows() == '1') {
+        // pega o ultimo id inserido na tabela X
+        $this->db->select("(SELECT IDENT_CURRENT('$table')) as ultimoId");
+        $ultimoId = $this->db->get()->result();
+        //com o ultimoId, pegamos a qtde linha afetada.
+        $this->db->select('os.*');
+        $this->db->from('os');
+        $this->db->where('idOs', $ultimoId[0]->ultimoId);
+        $query = $this->db->get()->row();
+        if ($query == 1) {
             if ($returnId == true) {
-                return $this->db->insert_id($table);
+                return $ultimoId[0]->ultimoId;
             }
             return true;
         }
-
         return false;
+
+        // TODO: Remover após alguns testes
+        // $this->db->insert($table, $data);
+        // if ($this->db->affected_rows() == '1') {
+        //     if ($returnId == true) {
+        //         return $this->db->insert_id($table);
+        //     }
+        //     return true;
+        // }
+        // return false;
     }
 
     public function edit($table, $data, $fieldID, $ID)
