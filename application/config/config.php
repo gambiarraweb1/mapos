@@ -9,7 +9,7 @@ $config['app_version'] = '4.32.1';
 /**
  * Nome do sistema
  */
-$config['app_name'] = 'Map-OS';
+$config['app_name'] = 'Oficina-OS';
 
 /**
  * Descrição do sistema
@@ -396,7 +396,7 @@ $config['encryption_key'] = '40ad83e080dc2a7';
 */
 $config['sess_driver'] = 'database';
 $config['sess_cookie_name'] = 'app_session';
-$config['sess_expiration'] = 7200;
+$config['sess_expiration'] = 21600;
 $config['sess_save_path'] = 'ci_sessions';
 $config['sess_match_ip'] = false;
 $config['sess_time_to_update'] = 300;
