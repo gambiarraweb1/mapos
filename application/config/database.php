@@ -3,12 +3,12 @@ defined('BASEPATH') or exit('No direct script access allowed');
 $active_group = 'default';
 $query_builder = true;
 $db['default'] = [
-    'dsn'   => '',
+    'dsn'   => 'sqlsrv:server=enter_hostname;Database=enter_database_name',
     'hostname' => 'enter_hostname',
     'username' => 'enter_db_username',
     'password' => 'enter_db_password',
     'database' => 'enter_database_name',
-    'dbdriver' => 'mysqli',
+    'dbdriver' => 'pdo',
     'dbprefix' => '',
     'pconnect' => false,
     'db_debug' => (ENVIRONMENT !== 'production'),
