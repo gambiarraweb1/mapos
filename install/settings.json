@@ -1,10 +1,9 @@
 {
-	"title": "MAPOS - Sistema de Controle de Ordens de Serviço",
+	"title": "Oficina-OS - Sistema de Controle de Ordens de Serviço",
 	"extensions": [
 		"cURL",
-		"MySQLi",
 		"GD",
-    "SqlSrv"
+    "PDO"
 	],
   "database_file": "../banco.sql",
   "writeable_directories": {
