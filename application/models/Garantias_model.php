@@ -50,7 +50,11 @@ class Garantias_model extends CI_Model
         $this->db->insert($table, $data);
         if ($this->db->affected_rows() == '1') {
             if ($returnId == true) {
-                return $this->db->insert_id($table);
+                $this->db->select("IDENT_CURRENT('$table') as ultimoId");
+                $ultimoId = $this->db->get()->result();
+                //echo json_encode(['idInserido' => $ultimoId[0]->ultimoId]);
+                return $ultimoId[0]->ultimoId;
+                // return $this->db->insert_id($table);
             }
             return true;
         }

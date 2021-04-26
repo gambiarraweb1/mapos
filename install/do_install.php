@@ -35,10 +35,13 @@ if (!empty($_POST)) {
     }
 
     //check for valid database connection
-    $mysqli = @new mysqli($host, $dbuser, $dbpassword, $dbname);
-
-    if (mysqli_connect_errno()) {
-        echo json_encode(["success" => false, "message" => $mysqli->connect_error]);
+    try {
+        // Try and connect to the database
+        $server = "sqlsrv:Server=$host;Database=$dbname";
+        $con = new PDO($server, $dbuser, $dbpassword);
+        $con->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+    } catch (PDOException $e) {
+        echo json_encode(["success" => false, "message" => $e->getMessage()]);
         exit();
     }
 
@@ -72,10 +75,13 @@ if (!empty($_POST)) {
     $sql = str_replace('admin_created_at', $now, $sql);
 
     //create tables in datbase
-    $mysqli->multi_query($sql);
-    do {
-    } while (mysqli_more_results($mysqli) && mysqli_next_result($mysqli));
-    $mysqli->close();
+    try {
+        $stmt = $con->prepare($sql, array(PDO::ATTR_CURSOR => PDO::CURSOR_SCROLL));
+        $stmt->execute();
+    } catch (PDOException $e) {
+        echo json_encode(["success" => false, "message" => "Erro ao criar tabelas: " . $e->getMessage()]);
+        exit();
+    }
     // database created
 
     // set the database config file

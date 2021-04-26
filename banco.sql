@@ -5,7 +5,7 @@ CREATE TABLE ci_sessions (
         [id] varchar(128) NOT NULL,
         [ip_address] varchar(45) NOT NULL,
         [timestamp] int check ([timestamp] > 0) DEFAULT 0 NOT NULL,
-        [data] varbinary(max) NOT NULL
+        [data] nvarchar(max) NOT NULL
 );
 
 CREATE INDEX [ci_sessions_timestamp] ON ci_sessions ([timestamp]);
@@ -120,7 +120,7 @@ CREATE INDEX [fk_usuarios_permissoes1_idx] ON usuarios ([permissoes_id] ASC);
 CREATE TABLE lancamentos (
   [idLancamentos] INT NOT NULL IDENTITY,
   [descricao] VARCHAR(255) NULL DEFAULT NULL,
-  [valor] VARCHAR(15) NOT NULL,
+  [valor] DECIMAL(10,2) NOT NULL,
   [data_vencimento] DATE NOT NULL,
   [data_pagamento] DATE NULL DEFAULT NULL,
   [baixado] SMALLINT NULL DEFAULT 0,
@@ -198,7 +198,7 @@ CREATE TABLE os (
   [status] VARCHAR(45) NULL DEFAULT NULL,
   [observacoes] VARCHAR(max) NULL DEFAULT NULL,
   [laudoTecnico] VARCHAR(max) NULL DEFAULT NULL,
-  [valorTotal] VARCHAR(15) NULL DEFAULT NULL,
+  [valorTotal] DECIMAL(10,2) NULL DEFAULT NULL,
   [clientes_id] INT NOT NULL,
   [usuarios_id] INT NOT NULL,
   [lancamento] INT NULL DEFAULT NULL,
@@ -254,10 +254,10 @@ CREATE TABLE produtos_os (
   [idProdutos_os] INT NOT NULL IDENTITY,
   [quantidade] INT NOT NULL,
   [descricao] VARCHAR(80) NULL,
-  [preco] VARCHAR(15) NULL,
+  [preco] DECIMAL(10,2) NULL,
   [os_id] INT NOT NULL,
   [produtos_id] INT NOT NULL,
-  [subTotal] VARCHAR(15) NULL DEFAULT NULL,
+  [subTotal] DECIMAL(10,2) NULL DEFAULT NULL,
   PRIMARY KEY ([idProdutos_os])
  ,
   CONSTRAINT [fk_produtos_os_os1]
@@ -295,10 +295,10 @@ CREATE TABLE servicos_os (
   [idServicos_os] INT NOT NULL IDENTITY,
   [servico] VARCHAR(80) NULL,
   [quantidade] FLOAT NULL,
-  [preco] VARCHAR(15) NULL,
+  [preco] DECIMAL(10,2) NULL,
   [os_id] INT NOT NULL,
   [servicos_id] INT NOT NULL,
-  [subTotal] VARCHAR(15) NULL DEFAULT NULL,
+  [subTotal] DECIMAL(10,2) NULL DEFAULT NULL,
   PRIMARY KEY ([idServicos_os])
  ,
   CONSTRAINT [fk_servicos_os_os1]
@@ -323,7 +323,7 @@ CREATE INDEX [fk_servicos_os_servicos1] ON servicos_os ([servicos_id] ASC);
 CREATE TABLE vendas (
   [idVendas] INT NOT NULL IDENTITY,
   [dataVenda] DATE NULL,
-  [valorTotal] VARCHAR(45) NULL,
+  [valorTotal] DECIMAL(10,2) NULL,
   [desconto] VARCHAR(45) NULL,
   [faturado] SMALLINT NULL,
   [observacoes] VARCHAR(max) NULL,
@@ -398,9 +398,9 @@ CREATE INDEX [fk_cobrancas_clientes1] ON cobrancas ([clientes_id] ASC);
 -- SQLINES DEMO *** ------------------------------------
 CREATE TABLE itens_de_vendas (
   [idItens] INT NOT NULL IDENTITY,
-  [subTotal] VARCHAR(45) NULL,
+  [subTotal] DECIMAL(10,2) NULL,
   [quantidade] INT NULL,
-  [preco] VARCHAR(15) NULL,
+  [preco] DECIMAL(10,2) NULL,
   [vendas_id] INT NOT NULL,
   [produtos_id] INT NOT NULL,
   PRIMARY KEY ([idItens])
