@@ -68,9 +68,8 @@ class Carros extends MY_Controller
                 'municipio' => set_value('municipio'),
                 'uf' => set_value('uf'),
                 'status' => set_value('status'),
-                'dataCadastro' => date('Y-m-d'),
-                //'dataAlteracao' => date('Y-m-d'),
-                //'dataCadastro' => date('Y-m-d'),
+                'dataCadastro' => date('Y-m-d H:i:s'),
+                //'dataAlteracao' => date('Y-m-d H:i:s'),
             ];
 
             if ($this->carros_model->add('carros', $data) == true) {
@@ -115,8 +114,8 @@ class Carros extends MY_Controller
                 'municipio' => $this->input->post('municipio'),
                 'uf' => $this->input->post('uf'),
                 'status' => $this->input->post('status'),
-                'dataCadastro' => $this->input->post('dataCadastro'),
-                'dataAlteracao' => $this->input->post('dataAlteracao'),
+                //'dataCadastro' => $this->input->post('dataCadastro'),
+                'dataAlteracao' => date('Y-m-d H:i:s'),
                 //'fornecedor' => (set_value('fornecedor') == true ? 1 : 0),
             ];
 
