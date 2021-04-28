@@ -124,7 +124,7 @@
                         <div class="control-group" class="control-label">
                             <label for="uf" class="control-label">Uf</label>
                             <div class="controls">
-                                <input id="bairrufo" type="text" name="uf" value="<?php echo set_value('uf'); ?>" />
+                                <input id="uf" type="text" name="uf" value="<?php echo set_value('uf'); ?>" />
                             </div>
                         </div>
                         <div class="control-group" class="control-label">
