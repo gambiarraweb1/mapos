@@ -36,6 +36,34 @@ CREATE TABLE clientes (
   PRIMARY KEY ([idClientes]))
 ;
 
+-- SQLINES DEMO *** ------------------------------------
+-- Table `carros`
+-- SQLINES DEMO *** ------------------------------------
+CREATE TABLE [dbo].[carros](
+	[idCarros] [int] IDENTITY(1,1) NOT NULL,
+	[idClientes] [int] NOT NULL,
+	[carro] [varchar](255) NOT NULL,
+	[placa] [varchar](10) NOT NULL,
+	[montadora] [varchar](255) NULL,
+	[anoFabricacao] [varchar](4) NULL,
+	[anoModelo] [varchar](4) NULL,
+	[cor] [varchar](50) NULL,
+	[chassi] [varchar](50) NULL,
+	[municipio] [varchar](50) NULL,
+	[uf] [char](2) NULL,
+	[status] [varchar](100) NULL,
+	[dataCadastro] [datetime] NULL,
+	[dataAlteracao] [datetime] NULL,
+PRIMARY KEY CLUSTERED 
+(
+	[idCarros] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY],
+ CONSTRAINT [IX_carros] UNIQUE NONCLUSTERED 
+(
+	[placa] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
+) ON [PRIMARY]
+GO
 
 
 -- SQLINES DEMO *** ------------------------------------
