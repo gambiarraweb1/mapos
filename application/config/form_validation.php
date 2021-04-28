@@ -56,6 +56,23 @@ $config = [
             'rules' => 'trim',
         ]
     ],
+    'carros' => [
+        [
+            'field' => 'carro',
+            'label' => 'Carro',
+            'rules' => 'required|trim',
+        ],
+        [
+            'field' => 'placa',
+            'label' => 'Placa',
+            'rules' => 'required|trim',
+        ],
+        [
+            'field' => 'montadora',
+            'label' => 'Montadora',
+            'rules' => 'required|trim',
+        ]
+    ],
     'servicos' => [
         [
             'field' => 'nome',
