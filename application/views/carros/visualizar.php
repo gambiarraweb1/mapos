@@ -32,7 +32,11 @@
                                     <tr>
                                         <td style="text-align: right; width: 30%"><strong>Carro</strong></td>
                                         <td>
-                                            <?php echo $result->carro; $idClientes = $result->idClientes; ?>
+                                            <?php
+                                            echo $result->carro;
+                                            // Talvez exita forma melhor de fazer isso, verificar
+                                            $_SESSION['clientes']['idClientes'] = $result->idClientes;
+                                            ?>
                                         </td>
                                     </tr>
                                     <tr>
@@ -116,16 +120,20 @@
                     <thead>
                         <tr style="backgroud-color: #2D335B">
                             <th>Cod.</th>
+                            <th>Nome</th>
                             <th>CPF/CNPJ</th>
                             <th>Telefone</th>
                             <th>Email</th>
                             <th>Ações</th>
-                            <th></th>
                         </tr>
                     </thead>
                     <tbody>
                         <tr>
                             <td colspan="6">Nenhum Cliente Associado (isso seria um problema)</td>
+                            <?php
+                            // TODO: Talvez exita forma melhor de fazer isso, verificar
+                            $_SESSION['clientes']['idClientes'] = null;
+                            ?>
                         </tr>
                     </tbody>
                 </table>
@@ -135,11 +143,11 @@
                     <thead>
                         <tr style="backgroud-color: #2D335B">
                             <th>Cod.</th>
+                            <th>Nome</th>
                             <th>CPF/CNPJ</th>
                             <th>Telefone</th>
                             <th>Email</th>
                             <th>Ações</th>
-                            <th></th>
                         </tr>
                     </thead>
                     <tbody>
@@ -149,17 +157,17 @@
                             $dataFinal = date(('d/m/Y'), strtotime($r->dataFinal));
                             echo '<tr>';
                             echo '<td>' . $r->idClientes . '</td>';
-                            echo '<td>' . $dataInicial . '</td>';
-                            echo '<td>' . $dataFinal . '</td>';
-                            echo '<td>' . $r->descricaoProduto . '</td>';
-                            echo '<td>' . $r->defeito . '</td>';
+                            echo '<td>' . $r->nomeCliente . '</td>';
+                            echo '<td>' . $r->documento . '</td>';
+                            echo '<td>' . $r->telefone . '</td>';
+                            echo '<td>' . $r->email . '</td>';
 
                             echo '<td>';
-                            if ($this->permission->checkPermission($this->session->userdata('permissao'), 'vOs')) {
-                                echo '<a href="' . base_url() . 'index.php/os/visualizar/' . $r->idOs . '" style="margin-right: 1%" class="btn tip-top" title="Ver mais detalhes"><i class="fas fa-eye"></i></a>';
+                            if ($this->permission->checkPermission($this->session->userdata('permissao'), 'vCliente')) {
+                                echo '<a href="' . base_url() . 'index.php/clientes/visualizar/' . $r->idClientes . '" style="margin-right: 1%" class="btn tip-top" title="Ver mais detalhes"><i class="fas fa-eye"></i></a>';
                             }
-                            if ($this->permission->checkPermission($this->session->userdata('permissao'), 'eOs')) {
-                                echo '<a href="' . base_url() . 'index.php/os/editar/' . $r->idOs . '" class="btn btn-info tip-top" title="Editar OS"><i class="fas fa-edit"></i></a>';
+                            if ($this->permission->checkPermission($this->session->userdata('permissao'), 'eCliente')) {
+                                echo '<a href="' . base_url() . 'index.php/clientes/editar/' . $r->idClientes . '" class="btn btn-info tip-top" title="Editar Cliente"><i class="fas fa-edit"></i></a>';
                             }
 
                             echo  '</td>';
