@@ -2,7 +2,7 @@
 <html lang="pt-br">
 
 <head>
-  <title><?= $configuration['app_name'] ?: 'Map-OS' ?></title>
+  <title><?= $configuration['app_name'] ?: 'Oficina-OS' ?></title>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <link rel="shortcut icon" type="image/png" href="<?= base_url(); ?>assets/img/favicon.png" />
@@ -44,7 +44,9 @@
     shortcut.add("F7", function() {
       location.href = '<?= site_url('garantias'); ?>';
     });
-    shortcut.add("F8", function() {});
+    shortcut.add("F8", function() {
+      location.href = '<?= site_url('carros'); ?>';
+    });
     shortcut.add("F9", function() {});
     shortcut.add("F10", function() {});
     shortcut.add("F11", function() {});
@@ -57,7 +59,7 @@
 <body>
   <!--Header-part-->
   <div id="header">
-    <h1><a href=""> <?= $configuration['app_name'] ?: 'Map-OS' ?> </a></h1>
+    <h1><a href=""> <?= $configuration['app_name'] ?: 'Oficina-OS' ?> </a></h1>
   </div>
   <!--close-Header-part-->
   <!--top-Header-menu-->
