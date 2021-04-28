@@ -1,5 +1,9 @@
 ### [OficinaOS] - SqlServer
 
+Versão Base do MapOS: 4.32.1 (atual até presente Data: 26/04/2021).
+Será atualizado conforme necessidade.
+Em breve um versionamento (novo), será adotado!
+
 ![MapOS](https://raw.githubusercontent.com/gambiarraweb1/OficinaOS/master/assets/img/logo.png)
 
 ![version](https://img.shields.io/badge/version-4.32.1-blue.svg?longCache=true&style=flat-square)
