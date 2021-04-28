@@ -59,7 +59,7 @@
                             <label for="cliente" class="control-label">Cliente<span class="required">*</span></label>
                             <div class="controls">
                                 <input id="cliente" type="text" name="cliente" value="" />
-                                <input id="clientes_id" class="span12" type="hidden" name="clientes_id" value="" />
+                                <input id="clientes_id" class="span12" type="hidden" name="clientes_id" value="<?php echo set_value('clientes_id'); ?>" />
                             </div>
                         </div>
                         <div class="control-group">
