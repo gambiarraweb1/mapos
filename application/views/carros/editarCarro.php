@@ -41,61 +41,44 @@
             </div>
             <ul class="nav nav-tabs">
                 <li class="active"><a data-toggle="tab" href="#home">Informações Básica</a></li>
-                <li><a data-toggle="tab" href="#menu2">Endereço</a></li>
+                <li><a data-toggle="tab" href="#menu2">Detalhes</a></li>
             </ul>
-            <form action="<?php echo current_url(); ?>" id="formCliente" method="post" class="form-horizontal">
+            <?php $_SESSION['clientes']['idClientes'] = $result->idClientes; ?>
+            <form action="<?php echo current_url(); ?>" id="formCarro" method="post" class="form-horizontal">
                 <div class="widget-content nopadding tab-content">
                     <?php if ($custom_error != '') {
                         echo '<div class="alert alert-danger">' . $custom_error . '</div>';
                     } ?>
                     <div id="home" class="tab-pane fade in active">
                         <div class="control-group">
-                            <label for="documento" class="control-label">CPF/CNPJ</label>
+                            <label for="cliente" class="control-label">Cliente</label>
                             <div class="controls">
-                                <input id="documento" class="cpfcnpj" type="text" name="documento" value="<?php echo $result->documento; ?>" />
-                                <button id="buscar_info_cnpj" class="btn btn-xs" type="button">Buscar Informações
-                                    (CNPJ)
-                                </button>
+                                <input id="<?php echo $result->idClientes; ?>" class="cliente" type="text" name="cliente" value="<?php echo $results[0]->nomeCliente; ?>" />
                             </div>
                         </div>
                         <div class="control-group">
-                            <?php echo form_hidden('idClientes', $result->idClientes) ?>
-                            <label for="nomeCliente" class="control-label">Nome/Razão Social<span class="required">*</span></label>
+                            <?php echo form_hidden('idCarros', $result->idCarros) ?>
+                            <label for="placa" class="control-label">Placa<span class="required">*</span></label>
                             <div class="controls">
-                                <input id="nomeCliente" type="text" name="nomeCliente" value="<?php echo $result->nomeCliente; ?>" />
+                                <input style="text-transform:uppercase" id="placa" type="text" name="placa" value="<?php echo $result->placa; ?>" />
                             </div>
                         </div>
                         <div class="control-group">
-                            <label for="contato" class="control-label">Contato:</label>
+                            <label for="carro" class="control-label">Carro:</label>
                             <div class="controls">
-                                <input class="nomeCliente" type="text" name="contato" value="<?php echo $result->contato; ?>" />
+                                <input class="carro" type="text" name="carro" value="<?php echo $result->carro; ?>" />
                             </div>
                         </div>
                         <div class="control-group">
-                            <label for="telefone" class="control-label">Telefone</label>
+                            <label for="montadora" class="control-label">Montadora</label>
                             <div class="controls">
-                                <input id="telefone" type="text" name="telefone" value="<?php echo $result->telefone; ?>" />
+                                <input id="montadora" type="text" name="montadora" value="<?php echo $result->montadora; ?>" />
                             </div>
                         </div>
                         <div class="control-group">
-                            <label for="celular" class="control-label">Celular</label>
+                            <label for="anoFabricacao" class="control-label">Ano Fabricação</label>
                             <div class="controls">
-                                <input id="celular" type="text" name="celular" value="<?php echo $result->celular; ?>" />
-                            </div>
-                        </div>
-                        <div class="control-group">
-                            <label for="email" class="control-label">Email</label>
-                            <div class="controls">
-                                <input id="email" type="text" name="email" value="<?php echo $result->email; ?>" />
-                            </div>
-                        </div>
-                        <div class="control-group">
-                            <label class="control-label">Tipo de Cliente</label>
-                            <div class="controls">
-                                <label for="fornecedor" class="btn btn-default" style="margin-top: 5px;">Fornecedor
-                                    <input type="checkbox" id="fornecedor" name="fornecedor" class="badgebox" value="1" <?= ($result->fornecedor == 1) ? 'checked' : '' ?>>
-                                    <span class="badge">&check;</span>
-                                </label>
+                                <input id="anoFabricacao" type="text" name="anoFabricacao" value="<?php echo $result->anoFabricacao; ?>" />
                             </div>
                         </div>
                         <div class="form-actions">
@@ -108,50 +91,42 @@
                             </div>
                         </div>
                     </div>
-                    <!-- Menu Endereços -->
+                    <!-- Menu Detalhes -->
                     <div id="menu2" class="tab-pane fade">
                         <div class="control-group" class="control-label">
-                            <label for="cep" class="control-label">CEP</label>
+                            <label for="anoModelo" class="control-label">Ano Modelo</label>
                             <div class="controls">
-                                <input id="cep" type="text" name="cep" value="<?php echo $result->cep; ?>" />
+                                <input id="anoModelo" type="text" name="anoModelo" value="<?php echo $result->anoModelo; ?>" />
                             </div>
                         </div>
                         <div class="control-group" class="control-label">
-                            <label for="rua" class="control-label">Rua</label>
+                            <label for="cor" class="control-label">Cor</label>
                             <div class="controls">
-                                <input id="rua" type="text" name="rua" value="<?php echo $result->rua; ?>" />
+                                <input id="cor" type="text" name="cor" value="<?php echo $result->cor; ?>" />
                             </div>
                         </div>
                         <div class="control-group">
-                            <label for="numero" class="control-label">Número</label>
+                            <label for="chassi" class="control-label">Chassi</label>
                             <div class="controls">
-                                <input id="numero" type="text" name="numero" value="<?php echo $result->numero; ?>" />
+                                <input id="chassi" type="text" name="chassi" value="<?php echo $result->chassi; ?>" />
                             </div>
                         </div>
                         <div class="control-group">
-                            <label for="complemento" class="control-label">Complemento</label>
+                            <label for="municipio" class="control-label">Municipio</label>
                             <div class="controls">
-                                <input id="complemento" type="text" name="complemento" value="<?php echo $result->complemento; ?>" />
+                                <input id="municipio" type="text" name="municipio" value="<?php echo $result->municipio; ?>" />
                             </div>
                         </div>
                         <div class="control-group" class="control-label">
-                            <label for="bairro" class="control-label">Bairro</label>
+                            <label for="uf" class="control-label">Uf</label>
                             <div class="controls">
-                                <input id="bairro" type="text" name="bairro" value="<?php echo $result->bairro; ?>" />
+                                <input id="uf" type="text" name="uf" value="<?php echo $result->uf; ?>" />
                             </div>
                         </div>
                         <div class="control-group" class="control-label">
-                            <label for="cidade" class="control-label">Cidade</label>
+                            <label for="status" class="control-label">Status</label>
                             <div class="controls">
-                                <input id="cidade" type="text" name="cidade" value="<?php echo $result->cidade; ?>" />
-                            </div>
-                        </div>
-                        <div class="control-group" class="control-label">
-                            <label for="estado" class="control-label">Estado</label>
-                            <div class="controls">
-                                <select id="estado" name="estado">
-                                    <option value="">Selecione...</option>
-                                </select>
+                                <input id="status" type="text" name="status" value="<?php echo $result->status; ?>" />
                             </div>
                         </div>
                         <div class="form-actions">
@@ -181,7 +156,7 @@
                 }
             }
         });
-        $('#formCliente').validate({
+        $('#formCarro').validate({
             rules: {
                 nomeCliente: {
                     required: true
