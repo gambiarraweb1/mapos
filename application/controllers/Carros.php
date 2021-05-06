@@ -59,7 +59,7 @@ class Carros extends MY_Controller
             $data = [
                 'idClientes' => set_value('clientes_id'),
                 'carro' => set_value('carro'),
-                'placa' => set_value('placa'),
+                'placa' => str_replace('-', '', set_value('placa')),
                 'montadora' => set_value('montadora'),
                 'anoFabricacao' => set_value('anoFabricacao'),
                 'anoModelo' => set_value('anoModelo'),
@@ -69,12 +69,11 @@ class Carros extends MY_Controller
                 'uf' => set_value('uf'),
                 'status' => set_value('status'),
                 'dataCadastro' => date('Y-m-d H:i:s'),
-                //'dataAlteracao' => date('Y-m-d H:i:s'),
             ];
 
             if ($this->carros_model->add('carros', $data) == true) {
                 $this->session->set_flashdata('success', 'Carro adicionado com sucesso!');
-                log_info('Adicionou um cliente.');
+                log_info('Adicionou um carro.');
                 redirect(site_url('carros/'));
             } else {
                 $this->data['custom_error'] = '<div class="form_error"><p>Ocorreu um erro.</p></div>';
@@ -114,22 +113,23 @@ class Carros extends MY_Controller
                 'municipio' => $this->input->post('municipio'),
                 'uf' => $this->input->post('uf'),
                 'status' => $this->input->post('status'),
-                //'dataCadastro' => $this->input->post('dataCadastro'),
                 'dataAlteracao' => date('Y-m-d H:i:s'),
-                //'fornecedor' => (set_value('fornecedor') == true ? 1 : 0),
             ];
 
             if ($this->carros_model->edit('carros', $data, 'idCarros', $this->input->post('idCarros')) == true) {
-                $this->session->set_flashdata('success', 'Cliente editado com sucesso!');
-                log_info('Alterou um cliente. ID' . $this->input->post('idCarros'));
+                $this->session->set_flashdata('success', 'Carro editado com sucesso!');
+                log_info('Alterou um carro. ID' . $this->input->post('idCarros'));
                 redirect(site_url('carros/editar/') . $this->input->post('idCarros'));
             } else {
                 $this->data['custom_error'] = '<div class="form_error"><p>Ocorreu um erro</p></div>';
             }
         }
 
+        $idClientes = $_SESSION['clientes']['idClientes'];
         $this->data['result'] = $this->carros_model->getById($this->uri->segment(3));
+        $this->data['results'] = $this->carros_model->getClienteByCarro($idClientes);
         $this->data['view'] = 'carros/editarCarro';
+        $_SESSION['clientes']['idClientes'] = null;
         return $this->layout();
     }
 
@@ -144,9 +144,8 @@ class Carros extends MY_Controller
             $this->session->set_flashdata('error', 'Você não tem permissão para visualizar carros.');
             redirect(base_url());
         }
-        // Talvez exita forma melhor de fazer isso, verificar
+        // Talvez exista forma melhor de fazer isso, verificar
         $idClientes = $_SESSION['clientes']['idClientes'];
-        //
         $this->data['custom_error'] = '';
         $this->data['result'] = $this->carros_model->getById($this->uri->segment(3));
         $this->data['results'] = $this->carros_model->getClienteByCarro($idClientes);
@@ -168,16 +167,19 @@ class Carros extends MY_Controller
             redirect(site_url('carros/gerenciar/'));
         }
 
-        $os = $this->carros_model->getAllOsByClient($id);
-        if ($os != null) {
-            $this->carros_model->removeClientOs($os);
-        }
+        // TODO: validar se existe os vinculada com o cliente e placa q está sendo removida
+        // caso exista não será possível a exclusão
+        // $os = $this->carros_model->getAllOsByClient($id);
+        // if ($os != null) {
+        //     $this->carros_model->removeClientOs($os);
+        // }
 
         // excluindo Vendas vinculadas ao cliente
-        $vendas = $this->carros_model->getAllVendasByClient($id);
-        if ($vendas != null) {
-            $this->carros_model->removeClientVendas($vendas);
-        }
+        // mesmo caso acima
+        // $vendas = $this->carros_model->getAllVendasByClient($id);
+        // if ($vendas != null) {
+        //     $this->carros_model->removeClientVendas($vendas);
+        // }
 
         $this->carros_model->delete('carros', 'idCarros', $id);
         log_info('Removeu um carro. ID' . $id);
@@ -196,9 +198,21 @@ class Carros extends MY_Controller
 
     public function validaPlacaJaAssociadaACliente()
     {
-        if (isset($_GET['term'])) {
-            $q = strtolower($_GET['term']);
-            $this->carros_model->validaPlacaJaAssociadaACliente($q);
+        if (!$this->permission->checkPermission($this->session->userdata('permissao'), 'aCarro')) {
+            $this->session->set_flashdata('error', 'Você não tem permissão para adicionar carros.');
+            redirect(base_url());
+        }
+        $this->load->library('form_validation');
+        $this->data['custom_error'] = '';
+        $data = [
+            'idCliente' => set_value('id'),
+            'placa' => set_value('idplaca'),
+        ];
+        //echo json_encode($data);
+        if ($this->carros_model->validaPlacaJaAssociadaACliente($data) == true) {
+            return true;
+        } else {
+            return false;
         }
     }
 }
