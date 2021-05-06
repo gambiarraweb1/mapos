@@ -55,6 +55,7 @@
                         echo '<div class="alert alert-danger">' . $custom_error . '</div>';
                     } ?>
                     <div id="home" class="tab-pane fade in active">
+                        <center><label id="lblRetorno"><b></b></label></center>
                         <div class="control-group">
                             <label for="cliente" class="control-label">Cliente<span class="required">*</span></label>
                             <div class="controls">
@@ -65,7 +66,7 @@
                         <div class="control-group">
                             <label for="placa" class="control-label">Placa<span class="required">*</span></label>
                             <div class="controls">
-                                <input id="placa" class="placa" type="text" name="placa" value="<?php echo set_value('placa'); ?>" />
+                                <input style="text-transform:uppercase" id="placa" class="placa" type="text" name="placa" value="<?php echo set_value('placa'); ?>" />
                                 <button id="buscar_info_placa" class="btn btn-xs" type="button">Buscar Informações (Placa)</button>
                             </div>
                         </div>
@@ -206,36 +207,50 @@
         var placa = $(this).val().replace('-', '').toUpperCase();
         //Verifica se campo cep possui valor informado.
         if (placa != "" || placa == null) {
-            //Expressão regular para validar placaa.
-            var validaplaca = /(^[A-Z]{3}[0-9][A-Z][0-9]{2}$)|(^[A-Z]{3}[0-9]{4}$)/; ///^[0-9]{8}$/;
-            //console.log(placa);
-            //Valida o formato da Placa.
+            var validaplaca = /(^[A-Z]{3}[0-9][A-Z][0-9]{2}$)|(^[A-Z]{3}[0-9]{4}$)/;
             if (validaplaca.test(placa)) {
-                //console.log(placa);
-
-                // $(document).ready({
-                //     source: "< ?php echo base_url(); ?>index.php/carros/validaPlacaJaAssociadaACliente",
-                //     minLength: 1,
-                //     select: function(event, ui) {
-                //         $("#placa").val(ui.item.id);
-                //         $idCliente = ui.item.id;
-                //     }
-                // });
-
+                let url = "<?php echo base_url(); ?>index.php/carros/validaPlacaJaAssociadaACliente";
+                return $.ajax({
+                    url: url,
+                    type: 'POST',
+                    data: {
+                        id: $idCliente,
+                        idplaca: placa.replace('-','')
+                    },
+                    async: true,
+                    success: function(res) {
+                        var retorno = jQuery.parseJSON(res);
+                        retorno.forEach(element => {
+                            //console.log(element['placaExiste']);
+                            if (element['placaExiste'] == 'sim') {
+                                $("#lblRetorno").empty();
+                                $("#lblRetorno").append($("<label><h6 style=color:red>*Placa já vinculada a outro cliente</h6>Tente Novamente!</label>").html());
+                                setTimeout(function() {
+                                    $("#lblRetorno").empty();
+                                    $('input[type=text]').val('');
+                                }, 3000);
+                            }
+                        });
+                    }
+                });
             } //end if.
             else {
-                //Placa é inválido.
-                //limpa_formulario_cep();
+                //Placa é inválida.
                 Swal.fire({
                     type: "error",
                     title: "Atenção",
                     text: "Formato de Placa inválido."
                 });
+                $('input[type=text]').val('');
             }
         } //end if.
         else {
-            //Placa sem valor, limpa formulário.
-            //limpa_formulario_cep();
+            Swal.fire({
+                type: "error",
+                title: "Atenção",
+                text: "Digite uma placa para continuar"
+            });
+            //$('input[type=text]').val('');
         }
     });
 </script>
