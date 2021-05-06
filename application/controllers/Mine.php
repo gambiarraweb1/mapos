@@ -542,7 +542,7 @@ class Mine extends CI_Controller
                 'cidade' => set_value('cidade'),
                 'estado' => set_value('estado'),
                 'cep' => set_value('cep'),
-                'dataCadastro' => date('Y-m-d'),
+                'dataCadastro' => date('Y-m-d H:i:s'),
             ];
 
             if ($this->clientes_model->add('clientes', $data) == true) {
