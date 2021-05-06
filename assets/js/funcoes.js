@@ -286,9 +286,16 @@ $(document).ready(function() {
                             montadora = dados.marca;
                         };
 
+                        // Ano Fabricação
+                        if (dados.ano == "" || dados.ano == null || dados.ano == "null") {
+                            ano = dados.anoModelo;
+                        } else {
+                            ano = dados.ano;
+                        }
+
                         $("#carro").val(capitalizeFirstLetter(carro));
                         $("#montadora").val(capitalizeFirstLetter(montadora));
-                        $("#anoFabricacao").val(dados.ano);
+                        $("#anoFabricacao").val(ano);
 
                         $("#anoModelo").val(dados.anoModelo);
                         $("#cor").val(capitalizeFirstLetter(dados.cor));
@@ -296,9 +303,6 @@ $(document).ready(function() {
                         $("#municipio").val(capitalizeFirstLetter(dados.municipio));
                         $("#uf").val(dados.uf);
                         $("#status").val(capitalizeFirstLetter(dados.situacao));
-
-                        // Força uma atualizacao do endereco via cep
-                        //document.getElementById("cep").focus();
                         //document.getElementById("nomeCliente").focus();
                     } //end if.
                     else {
