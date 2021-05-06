@@ -70,7 +70,7 @@ class Clientes extends MY_Controller
                 'cidade' => set_value('cidade'),
                 'estado' => set_value('estado'),
                 'cep' => set_value('cep'),
-                'dataCadastro' => date('Y-m-d'),
+                'dataCadastro' => date('Y-m-d H:i:s'),
                 'fornecedor' => (set_value('fornecedor') == true ? 1 : 0),
             ];
 
@@ -151,6 +151,7 @@ class Clientes extends MY_Controller
         $this->data['custom_error'] = '';
         $this->data['result'] = $this->clientes_model->getById($this->uri->segment(3));
         $this->data['results'] = $this->clientes_model->getOsByCliente($this->uri->segment(3));
+        $this->data['resultCarros'] = $this->clientes_model->getCarroByCliente($this->uri->segment(3));
         $this->data['view'] = 'clientes/visualizar';
         return $this->layout();
     }
@@ -166,6 +167,11 @@ class Clientes extends MY_Controller
         if ($id == null) {
             $this->session->set_flashdata('error', 'Erro ao tentar excluir cliente.');
             redirect(site_url('clientes/gerenciar/'));
+        }
+
+        $carro = $this->clientes_model->getCarroByCliente($id);
+        if ($carro != null) {
+            $this->clientes_model->removeCarros($carro);
         }
 
         $os = $this->clientes_model->getAllOsByClient($id);
