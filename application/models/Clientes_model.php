@@ -82,6 +82,14 @@ class Clientes_model extends CI_Model
         return $this->db->get('os')->result();
     }
 
+    public function getCarroByCliente($id)
+    {
+        $this->db->where('idClientes', $id);
+        $this->db->order_by('idCarros', 'desc');
+        $this->db->limit(10);
+        return $this->db->get('carros')->result();
+    }
+
     /**
      * Retorna todas as OS vinculados ao cliente
      * @param int $id
@@ -91,6 +99,30 @@ class Clientes_model extends CI_Model
     {
         $this->db->where('clientes_id', $id);
         return $this->db->get('os')->result();
+    }
+
+    /**
+     * Remover todos os Carros por Cliente
+     * @param array $os
+     * @return boolean
+     */
+    public function removeCarros($carro)
+    {
+        try {
+            foreach ($carro as $c) {
+                $this->db->where('idCarros', $c->idCarros);
+                $this->db->delete('carros');
+
+                // $this->db->where('os_id', $c->idOs);
+                // $this->db->delete('produtos_os');
+
+                // $this->db->where('idOs', $c->idOs);
+                // $this->db->delete('os');
+            }
+        } catch (Exception $e) {
+            return false;
+        }
+        return true;
     }
 
     /**
