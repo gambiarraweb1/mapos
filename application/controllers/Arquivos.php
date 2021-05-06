@@ -89,7 +89,7 @@ class Arquivos extends MY_Controller
             $data = $this->input->post('data');
 
             if ($data == null) {
-                $data = date('Y-m-d');
+                $data = date('Y-m-d H:i:s');
             } else {
                 $data = explode('/', $data);
                 $data = $data[2] . '-' . $data[1] . '-' . $data[0];
@@ -142,7 +142,7 @@ class Arquivos extends MY_Controller
         } else {
             $data = $this->input->post('data');
             if ($data == null) {
-                $data = date('Y-m-d');
+                $data = date('Y-m-d H:i:s');
             } else {
                 $data = explode('/', $data);
                 $data = $data[2] . '-' . $data[1] . '-' . $data[0];
