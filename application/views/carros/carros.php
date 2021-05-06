@@ -47,7 +47,6 @@
                     echo '<td>';
                     if ($this->permission->checkPermission($this->session->userdata('permissao'), 'vCarro')) {
                         echo '<a href="' . base_url() . 'index.php/carros/visualizar/' . $r->idCarros . '" style="margin-right: 1%" class="btn tip-top" title="Ver mais detalhes"><i class="fas fa-eye"></i></a>';
-                        // echo '<a href="' . base_url() . 'index.php/mine?e=' . $r->email . '&c=' . $r->documento . '" target="new" style="margin-right: 1%" class="btn tip-top" title="Área do cliente"><i class="fas fa-key"></i></a>';
                     }
                     if ($this->permission->checkPermission($this->session->userdata('permissao'), 'eCarro')) {
                         echo '<a href="' . base_url() . 'index.php/carros/editar/' . $r->idCarros . '" style="margin-right: 1%" class="btn btn-info tip-top" title="Editar Carro"><i class="fas fa-edit"></i></a>';
