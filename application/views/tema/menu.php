@@ -13,7 +13,7 @@
         <?php if ($this->permission->checkPermission($this->session->userdata('permissao'), 'vCarro')) { ?>
             <li class="<?php if (isset($menuCarros)) {
                             echo 'active';
-                        }; ?>"><a href="<?= site_url('carros') ?>"><i class="fas fa-users"></i> <span>Carros</span></a></li>
+                        }; ?>"><a href="<?= site_url('carros') ?>"><i class="fas fa-car"></i> <span>Carros</span></a></li>
         <?php
         } ?>
         <?php if ($this->permission->checkPermission($this->session->userdata('permissao'), 'vProduto')) { ?>
