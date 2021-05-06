@@ -74,79 +74,17 @@ class Carros_model extends CI_Model
         return $this->db->count_all($table);
     }
 
+    /**
+     * Retorna o Cliente vinculado ao Carro
+     * @param int $id
+     * @return array
+     */
     public function getClienteByCarro($id)
     {
         $this->db->where('idClientes', $id);
         $this->db->order_by('idClientes', 'desc');
         $this->db->limit(10);
         return $this->db->get('clientes')->result();
-    }
-
-    /**
-     * Retorna todas as OS vinculados ao cliente
-     * @param int $id
-     * @return array
-     */
-    public function getAllOsByClient($id)
-    {
-        $this->db->where('clientes_id', $id);
-        return $this->db->get('os')->result();
-    }
-
-    /**
-     * Remover todas as OS por cliente
-     * @param array $os
-     * @return boolean
-     */
-    public function removeClientOs($os)
-    {
-        try {
-            foreach ($os as $o) {
-                $this->db->where('os_id', $o->idOs);
-                $this->db->delete('servicos_os');
-
-                $this->db->where('os_id', $o->idOs);
-                $this->db->delete('produtos_os');
-
-                $this->db->where('idOs', $o->idOs);
-                $this->db->delete('os');
-            }
-        } catch (Exception $e) {
-            return false;
-        }
-        return true;
-    }
-
-    /**
-     * Retorna todas as Vendas vinculados ao cliente
-     * @param int $id
-     * @return array
-     */
-    public function getAllVendasByClient($id)
-    {
-        $this->db->where('clientes_id', $id);
-        return $this->db->get('vendas')->result();
-    }
-
-    /**
-     * Remover todas as Vendas por cliente
-     * @param array $vendas
-     * @return boolean
-     */
-    public function removeClientVendas($vendas)
-    {
-        try {
-            foreach ($vendas as $v) {
-                $this->db->where('vendas_id', $v->idVendas);
-                $this->db->delete('itens_de_vendas');
-
-                $this->db->where('idVendas', $v->idVendas);
-                $this->db->delete('vendas');
-            }
-        } catch (Exception $e) {
-            return false;
-        }
-        return true;
     }
 
     public function autoCompleteCliente($q)
@@ -165,19 +103,21 @@ class Carros_model extends CI_Model
         }
     }
 
-    public function validaPlacaJaAssociadaACliente($q)
+    public function validaPlacaJaAssociadaACliente($data)
     {
+        //echo json_encode($data);
         $this->db->select('*');
         $this->db->limit(5);
-        $this->db->like('nomeCliente', $q);
-        //$this->db->or_like('telefone', $q);
-        //$this->db->or_like('celular', $q);
-        $this->db->join('clientes');
+        $this->db->like('placa', $data['placa']);
+        //$this->db->join('clientes', 'clientes.idClientes = carros.idClientes');
         $query = $this->db->get('carros');
         if ($query->num_rows() > 0) {
             foreach ($query->result_array() as $row) {
-                $row_set[] = ['label' => $row['nomeCliente'] . ' | Telefone: ' . $row['telefone'] . ' | Celular: ' . $row['celular'], 'id' => $row['idCarros']];
+                $row_set[] = ['label' => $row['carro'] . ' | placa: ' . $row['placa'] . ' | montadora: ' . $row['montadora'], 'id' => $row['idCarros'], 'placaExiste' => ['sim']];
             }
+            echo json_encode($row_set);
+        } else {
+            $row_set[] = ['label' => ['carro'] . ' | placa: ' . ['placa'] . ' | montadora: ' . ['montadora'], 'id' => ['idCarros'], 'placaExiste' => ['não']];
             echo json_encode($row_set);
         }
     }
