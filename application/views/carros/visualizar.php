@@ -34,6 +34,8 @@
                                         <td>
                                             <?php
                                             echo $result->carro;
+                                            ?>
+                                            <?php
                                             // Talvez exita forma melhor de fazer isso, verificar
                                             $_SESSION['clientes']['idClientes'] = $result->idClientes;
                                             ?>
@@ -130,10 +132,6 @@
                     <tbody>
                         <tr>
                             <td colspan="6">Nenhum Cliente Associado (isso seria um problema)</td>
-                            <?php
-                            // TODO: Talvez exita forma melhor de fazer isso, verificar
-                            $_SESSION['clientes']['idClientes'] = null;
-                            ?>
                         </tr>
                     </tbody>
                 </table>
