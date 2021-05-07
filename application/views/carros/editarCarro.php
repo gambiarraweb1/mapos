@@ -1,6 +1,12 @@
 <script src="<?php echo base_url() ?>assets/js/jquery.mask.min.js"></script>
 <script src="<?php echo base_url() ?>assets/js/sweetalert2.all.min.js"></script>
 <script src="<?php echo base_url() ?>assets/js/funcoes.js"></script>
+
+<!-- TODO: Validar -->
+<link rel="stylesheet" href="<?php echo base_url(); ?>assets/js/jquery-ui/css/smoothness/jquery-ui-1.9.2.custom.css" />
+<script type="text/javascript" src="<?php echo base_url() ?>assets/js/jquery-ui/js/jquery-ui-1.9.2.custom.js"></script>
+<script type="text/javascript" src="<?php echo base_url() ?>assets/js/jquery.validate.js"></script>
+
 <style>
     /* Hiding the checkbox, but allowing it to be focused */
     .badgebox {
@@ -32,7 +38,7 @@
         <div class="widget-box">
             <div class="widget-title">
                 <span class="icon">
-                    <i class="fas fa-user"></i>
+                    <i class="fas fa-car"></i>
                 </span>
                 <h5>Editar Carro</h5>
                 <div class="buttons">
@@ -50,23 +56,26 @@
                         echo '<div class="alert alert-danger">' . $custom_error . '</div>';
                     } ?>
                     <div id="home" class="tab-pane fade in active">
+                        <center><label id="lblRetorno"><b></b></label></center>
                         <div class="control-group">
                             <label for="cliente" class="control-label">Cliente</label>
                             <div class="controls">
-                                <input id="<?php echo $result->idClientes; ?>" class="cliente" type="text" name="cliente" value="<?php echo $results[0]->nomeCliente; ?>" />
+                                <input id="cliente" class="cliente" type="text" name="cliente" value="<?php echo $results[0]->nomeCliente; ?>" />
+                                <input id="clientes_id" class="span12" type="hidden" name="clientes_id" value="<?php echo $result->idClientes; ?>" />
                             </div>
                         </div>
                         <div class="control-group">
                             <?php echo form_hidden('idCarros', $result->idCarros) ?>
                             <label for="placa" class="control-label">Placa<span class="required">*</span></label>
                             <div class="controls">
-                                <input style="text-transform:uppercase" id="placa" type="text" name="placa" value="<?php echo $result->placa; ?>" />
+                                <input style="text-transform:uppercase" id="placa" class="placa" type="text" name="placa" value="<?php echo $result->placa; ?>" />
+                                <button id="buscar_info_placa" class="btn btn-xs" type="button">Buscar Informações (Placa)</button>
                             </div>
                         </div>
                         <div class="control-group">
                             <label for="carro" class="control-label">Carro:</label>
                             <div class="controls">
-                                <input class="carro" type="text" name="carro" value="<?php echo $result->carro; ?>" />
+                                <input id="carro" type="text" name="carro" value="<?php echo $result->carro; ?>" />
                             </div>
                         </div>
                         <div class="control-group">
@@ -156,6 +165,17 @@
                 }
             }
         });
+
+        $("#cliente").autocomplete({
+            source: "<?php echo base_url(); ?>index.php/carros/autoCompleteCliente",
+            minLength: 1,
+            select: function(event, ui) {
+                $("#clientes_id").val(ui.item.id);
+                $idCliente = ui.item.id;
+            }
+        });
+
+        $("#carro").focus();
         $('#formCarro').validate({
             rules: {
                 nomeCliente: {
@@ -178,5 +198,56 @@
                 $(element).parents('.control-group').addClass('success');
             }
         });
+    });
+
+    $("#placa").blur(function() {
+        var placa = $(this).val().replace('-', '').toUpperCase();
+        //Verifica se campo cep possui valor informado.
+        if (placa != "" || placa == null) {
+            var validaplaca = /(^[A-Z]{3}[0-9][A-Z][0-9]{2}$)|(^[A-Z]{3}[0-9]{4}$)/;
+            if (validaplaca.test(placa)) {
+                let url = "<?php echo base_url(); ?>index.php/carros/validaPlacaJaAssociadaACliente";
+                return $.ajax({
+                    url: url,
+                    type: 'POST',
+                    data: {
+                        id: $idCliente,
+                        idplaca: placa.replace('-', '')
+                    },
+                    async: true,
+                    success: function(res) {
+                        var retorno = jQuery.parseJSON(res);
+                        retorno.forEach(element => {
+                            //console.log(element['placaExiste']);
+                            if (element['placaExiste'] == 'sim') {
+                                $("#lblRetorno").empty();
+                                $("#lblRetorno").append($("<label><h6 style=color:red>*Placa já vinculada a outro cliente</h6>Tente Novamente!</label>").html());
+                                setTimeout(function() {
+                                    $("#lblRetorno").empty();
+                                    $('input[type=text]').val('');
+                                }, 3000);
+                            }
+                        });
+                    }
+                });
+            } //end if.
+            else {
+                //Placa é inválida.
+                Swal.fire({
+                    type: "error",
+                    title: "Atenção",
+                    text: "Formato de Placa inválido."
+                });
+                $('input[type=text]').val('');
+            }
+        } //end if.
+        else {
+            Swal.fire({
+                type: "error",
+                title: "Atenção",
+                text: "Digite uma placa para continuar"
+            });
+            //$('input[type=text]').val('');
+        }
     });
 </script>
