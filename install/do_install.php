@@ -34,14 +34,31 @@ if (!empty($_POST)) {
         exit();
     }
 
+    // create database #Diego 07/05/21
+    function createDataBase($dbuser, $dbpassword, $dbname, $host)
+    {
+        try {
+            $pdo = new PDO("sqlsrv:Server=$host", $dbuser, $dbpassword);
+            $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+            $pdo->query("IF NOT EXISTS(SELECT * FROM sys.databases WHERE name = '$dbname')
+                        BEGIN
+                            CREATE DATABASE $dbname
+                        END");
+            $pdo->query("USE $dbname");
+        } catch (PDOException $e) {
+            echo json_encode(["error" => true, "message" => $e->getMessage(), "obs" => "erro ao criar o banco de Dados"]);
+            exit();
+        }
+    }
     //check for valid database connection
     try {
+        createDataBase($dbuser, $dbpassword, $dbname, $host);
         // Try and connect to the database
         $server = "sqlsrv:Server=$host;Database=$dbname";
         $con = new PDO($server, $dbuser, $dbpassword);
         $con->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
     } catch (PDOException $e) {
-        echo json_encode(["success" => false, "message" => $e->getMessage()]);
+        echo json_encode(["error" => true, "message" => $e->getMessage()]);
         exit();
     }
 
@@ -74,12 +91,12 @@ if (!empty($_POST)) {
     $sql = str_replace('admin_password', password_hash($login_password, PASSWORD_DEFAULT), $sql);
     $sql = str_replace('admin_created_at', $now, $sql);
 
-    //create tables in datbase
+    //create tables in database
     try {
         $stmt = $con->prepare($sql, array(PDO::ATTR_CURSOR => PDO::CURSOR_SCROLL));
         $stmt->execute();
     } catch (PDOException $e) {
-        echo json_encode(["success" => false, "message" => "Erro ao criar tabelas: " . $e->getMessage()]);
+        echo json_encode(["error" => true, "message" => "Erro ao criar tabelas: " . $e->getMessage()]);
         exit();
     }
     // database created
