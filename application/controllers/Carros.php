@@ -59,7 +59,7 @@ class Carros extends MY_Controller
             $data = [
                 'idClientes' => set_value('clientes_id'),
                 'carro' => set_value('carro'),
-                'placa' => str_replace('-', '', set_value('placa')),
+                'placa' => strtoupper(str_replace('-', '', set_value('placa'))),
                 'montadora' => set_value('montadora'),
                 'anoFabricacao' => set_value('anoFabricacao'),
                 'anoModelo' => set_value('anoModelo'),
@@ -103,8 +103,9 @@ class Carros extends MY_Controller
             $this->data['custom_error'] = (validation_errors() ? '<div class="form_error">' . validation_errors() . '</div>' : false);
         } else {
             $data = [
+                'idClientes' => $this->input->post('clientes_id'),
                 'carro' => $this->input->post('carro'),
-                'placa' => $this->input->post('placa'),
+                'placa' => strtoupper(str_replace('-', '', $this->input->post('placa'))),
                 'montadora' => $this->input->post('montadora'),
                 'anoFabricacao' => $this->input->post('anoFabricacao'),
                 'anoModelo' => $this->input->post('anoModelo'),
@@ -127,7 +128,7 @@ class Carros extends MY_Controller
 
         $idClientes = $_SESSION['clientes']['idClientes'];
         $this->data['result'] = $this->carros_model->getById($this->uri->segment(3));
-        $this->data['results'] = $this->carros_model->getClienteByCarro($idClientes);
+        $this->data['results'] = $this->carros_model->getClienteByCarro($this->uri->segment(3));
         $this->data['view'] = 'carros/editarCarro';
         $_SESSION['clientes']['idClientes'] = null;
         return $this->layout();
@@ -148,7 +149,8 @@ class Carros extends MY_Controller
         $idClientes = $_SESSION['clientes']['idClientes'];
         $this->data['custom_error'] = '';
         $this->data['result'] = $this->carros_model->getById($this->uri->segment(3));
-        $this->data['results'] = $this->carros_model->getClienteByCarro($idClientes);
+        $this->data['results'] = $this->carros_model->getClienteByCarro($this->uri->segment(3));
+        //$this->data['results'] = $this->carros_model->getClienteByCarro($idClientes);
         $this->data['view'] = 'carros/visualizar';
         $_SESSION['clientes']['idClientes'] = null;
         return $this->layout();
