@@ -81,10 +81,12 @@ class Carros_model extends CI_Model
      */
     public function getClienteByCarro($id)
     {
-        $this->db->where('idClientes', $id);
-        $this->db->order_by('idClientes', 'desc');
-        $this->db->limit(10);
-        return $this->db->get('clientes')->result();
+        $this->db->select('clientes.*');
+        $this->db->from('clientes');
+        $this->db->join('carros', 'carros.idClientes = clientes.idClientes');
+        $this->db->where('carros.idCarros', $id);
+
+        return $this->db->get()->result();
     }
 
     public function autoCompleteCliente($q)
