@@ -254,7 +254,7 @@ $(document).ready(function() {
     });
 
     // Busca Placa
-    function buscaPlaca2(placa) {
+    function buscaPlaca(placa) {
         var ndocumento = placa.replace('-', '').toLocaleUpperCase();
 
         if (validarPlaca(ndocumento)) {
@@ -272,7 +272,7 @@ $(document).ready(function() {
 
             //Consulta o webservice receitaws.com.br/
             $.ajax({
-                url: "https://apicarros.com/v2/consultas/" + ndocumento + "/f63e1e63dd231083d38ce929984aac7d",
+                url: "https://apicarros.com/v2/consultas/" + ndocumento,
                 //url: "https://apicarros.com/v1/consulta/" + ndocumento + "/json",
                 dataType: 'json',
                 crossDomain: true,
@@ -280,18 +280,30 @@ $(document).ready(function() {
                 success: function(dados) {
                     if (dados.codigoRetorno == "0" || dados.codigoSituacao == "0") {
                         //Atualiza os campos com os valores da consulta.
-                        carro = dados.modelo.substring(dados.modelo.indexOf("/") + 1);
                         montadora = (dados.modelo.split("/")[0]);
                         if (montadora == "" || montadora == null) {
                             montadora = dados.marca;
                         };
-
+                        // Carro
+                        if (dados.extra.marca_modelo.grupo != "" || dados.extra.marca_modelo.grupo != null) {
+                            carro = dados.extra.marca_modelo.grupo;
+                        } else if (dados.modelo.substring(dados.modelo.indexOf("/") + 1) != "" || dados.modelo.substring(dados.modelo.indexOf("/") + 1) != null) {
+                            carro = dados.modelo.substring(dados.modelo.indexOf("/") + 1);
+                        } else {
+                            carro = dados.modelo;
+                        }
+                        // Chassi
+                        if (dados.extra.chassi != "" || dados.extra.chassi != null) {
+                            chassi = dados.extra.chassi;
+                        } else {
+                            chassi = dados.chassi;
+                        };
                         // Ano Fabricação
                         if (dados.ano == "" || dados.ano == null || dados.ano == "null") {
                             ano = dados.anoModelo;
                         } else {
                             ano = dados.ano;
-                        }
+                        };
 
                         $("#carro").val(capitalizeFirstLetter(carro));
                         $("#montadora").val(capitalizeFirstLetter(montadora));
@@ -299,7 +311,7 @@ $(document).ready(function() {
 
                         $("#anoModelo").val(dados.anoModelo);
                         $("#cor").val(capitalizeFirstLetter(dados.cor));
-                        $("#chassi").val(dados.chassi);
+                        $("#chassi").val(chassi);
                         $("#municipio").val(capitalizeFirstLetter(dados.municipio));
                         $("#uf").val(dados.uf);
                         $("#status").val(capitalizeFirstLetter(dados.situacao));
@@ -355,93 +367,7 @@ $(document).ready(function() {
     $('#buscar_info_placa').on('click', function() {
         //Nova variável "ndocumento" somente com dígitos.
         var ndocumento = $('#placa').val().replace('-', '').toLocaleUpperCase();
-        buscaPlaca2(ndocumento);
-        return;
-        if (validarPlaca(ndocumento)) {
-            //Preenche os campos com "..." enquanto consulta webservice.
-            $("#carro").val("...");
-            $("#montadora").val("...");
-            $("#anoFabricacao").val("...");
-
-            $("#anoModelo").val("...");
-            $("#cor").val("...");
-            $("#chassi").val("...");
-            $("#municipio").val("...");
-            $("#uf").val("...");
-            $("#status").val("...");
-
-            //Consulta o webservice receitaws.com.br/
-            $.ajax({
-                url: "https://apicarros.com/v1/consulta/" + ndocumento + "/json",
-                dataType: 'json',
-                crossDomain: true,
-                //contentType: "text/javascript",
-                success: function(dados) {
-                    if (dados.codigoRetorno == "0" || dados.codigoSituacao == "0") {
-                        //Atualiza os campos com os valores da consulta.
-                        carro = dados.modelo.substring(dados.modelo.indexOf("/") + 1);
-                        montadora = (dados.modelo.split("/")[0]);
-
-                        $("#carro").val(capitalizeFirstLetter(carro));
-                        $("#montadora").val(capitalizeFirstLetter(montadora));
-                        $("#anoFabricacao").val(dados.ano);
-                        $("#anoModelo").val(dados.anoModelo);
-                        $("#cor").val(dados.cor);
-                        $("#chassi").val(dados.chassi);
-                        $("#municipio").val(dados.municipio);
-                        $("#uf").val(dados.uf);
-                        $("#status").val(dados.situacao);
-
-                        // Força uma atualizacao do endereco via cep
-                        //document.getElementById("cep").focus();
-                        //document.getElementById("nomeCliente").focus();
-                    } //end if.
-                    else {
-                        //Placa pesquisada não foi encontrada.
-                        $("#carro").val("");
-                        $("#montadora").val("");
-                        $("#anoFabricacao").val("");
-                        $("#anoModelo").val("");
-                        $("#cor").val("");
-                        $("#chassi").val("");
-                        $("#municipio").val("");
-                        $("#uf").val("");
-                        $("#status").val("");
-
-                        Swal.fire({
-                            type: "warning",
-                            title: "Atenção (" + ndocumento + ")",
-                            text: "Placa não encontrada."
-                        });
-                    }
-                },
-                error: function() {
-                    ///Placa pesquisada com erro.
-                    $("#carro").val("");
-                    $("#montadora").val("");
-                    $("#anoFabricacao").val("");
-                    $("#anoModelo").val("");
-                    $("#cor").val("");
-                    $("#chassi").val("");
-                    $("#municipio").val("");
-                    $("#uf").val("");
-                    $("#status").val("");
-
-                    Swal.fire({
-                        type: "warning",
-                        title: "Atenção (" + ndocumento + ")",
-                        text: "Erro: Placa não encontrada."
-                    });
-                },
-                timeout: 2000,
-            });
-        } else {
-            Swal.fire({
-                type: "warning",
-                title: "Atenção",
-                text: "Placa inválida!"
-            });
-        }
+        buscaPlaca(ndocumento);
     });
 
     function validarPlaca(placa) {
