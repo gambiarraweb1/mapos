@@ -18,7 +18,7 @@
                     <div class="accordion-heading">
                         <div class="widget-title">
                             <a data-parent="#collapse-group" href="#collapseGOne" data-toggle="collapse">
-                                <span class="icon"><i class="fas fa-user"></i></span>
+                                <span class="icon"><i class="fas fa-car"></i></span>
                                 <h5>Dados - (<?php echo $result->carro;
                                                 echo " / ";
                                                 echo $result->placa ?>)</h5>
