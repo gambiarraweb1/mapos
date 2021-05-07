@@ -204,53 +204,65 @@
     });
 
     $("#placa").blur(function() {
-        var placa = $(this).val().replace('-', '').toUpperCase();
-        //Verifica se campo cep possui valor informado.
-        if (placa != "" || placa == null) {
-            var validaplaca = /(^[A-Z]{3}[0-9][A-Z][0-9]{2}$)|(^[A-Z]{3}[0-9]{4}$)/;
-            if (validaplaca.test(placa)) {
-                let url = "<?php echo base_url(); ?>index.php/carros/validaPlacaJaAssociadaACliente";
-                return $.ajax({
-                    url: url,
-                    type: 'POST',
-                    data: {
-                        id: $idCliente,
-                        idplaca: placa.replace('-', '')
-                    },
-                    async: true,
-                    success: function(res) {
-                        var retorno = jQuery.parseJSON(res);
-                        retorno.forEach(element => {
-                            //console.log(element['placaExiste']);
-                            if (element['placaExiste'] == 'sim') {
-                                $("#lblRetorno").empty();
-                                $("#lblRetorno").append($("<label><h6 style=color:red>*Placa já vinculada a outro cliente</h6>Tente Novamente!</label>").html());
-                                setTimeout(function() {
+        if (typeof $idCliente !== 'undefined') {
+            var placa = $(this).val().replace('-', '').toUpperCase();
+            //Verifica se campo placa possui valor informado.
+            if (placa != "" || placa == null) {
+                var validaplaca = /(^[A-Z]{3}[0-9][A-Z][0-9]{2}$)|(^[A-Z]{3}[0-9]{4}$)/;
+                if (validaplaca.test(placa)) {
+                    let url = "<?php echo base_url(); ?>index.php/carros/validaPlacaJaAssociadaACliente";
+                    return $.ajax({
+                        url: url,
+                        type: 'POST',
+                        data: {
+                            id: $idCliente,
+                            idplaca: placa.replace('-', '')
+                        },
+                        async: true,
+                        success: function(res) {
+                            var retorno = jQuery.parseJSON(res);
+                            retorno.forEach(element => {
+                                //console.log(element['placaExiste']);
+                                if (element['placaExiste'] == 'sim') {
                                     $("#lblRetorno").empty();
-                                    $('input[type=text]').val('');
-                                }, 3000);
-                            }
-                        });
-                    }
-                });
+                                    $("#lblRetorno").append($("<label><h6 style=color:red>*Placa já vinculada a outro cliente</h6>Tente Novamente!</label>").html());
+                                    setTimeout(function() {
+                                        $("#lblRetorno").empty();
+                                        $('input[type=text]').val('');
+                                    }, 3000);
+                                }
+                            });
+                        }
+                    });
+                } //end if.
+                else {
+                    //Placa é inválida.
+                    Swal.fire({
+                        type: "error",
+                        title: "Atenção",
+                        text: "Formato de Placa inválido."
+                    });
+                    $('input[type=text]').val('');
+                }
             } //end if.
             else {
-                //Placa é inválida.
                 Swal.fire({
                     type: "error",
                     title: "Atenção",
-                    text: "Formato de Placa inválido."
+                    text: "Digite uma placa para continuar"
                 });
-                $('input[type=text]').val('');
+                //$('input[type=text]').val('');
             }
-        } //end if.
-        else {
+        } else {
             Swal.fire({
                 type: "error",
                 title: "Atenção",
-                text: "Digite uma placa para continuar"
-            });
-            //$('input[type=text]').val('');
+                text: "Selecione um cliente primeiro!"
+            })
+            setTimeout(function() {
+                $("#lblRetorno").empty();
+                $('input[type=text]').val('');
+            }, 1000);;
         }
     });
 </script>
