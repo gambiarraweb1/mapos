@@ -38,7 +38,7 @@
         <div class="widget-box">
             <div class="widget-title">
                 <span class="icon">
-                    <i class="fas fa-user"></i>
+                    <i class="fas fa-car"></i>
                 </span>
                 <h5>Cadastro de Carro</h5>
                 <div class="buttons">
@@ -59,7 +59,7 @@
                         <div class="control-group">
                             <label for="cliente" class="control-label">Cliente<span class="required">*</span></label>
                             <div class="controls">
-                                <input id="cliente" type="text" name="cliente" value="" />
+                                <input id="cliente" class="cliente" type="text" name="cliente" value="" />
                                 <input id="clientes_id" class="span12" type="hidden" name="clientes_id" value="<?php echo set_value('clientes_id'); ?>" />
                             </div>
                         </div>
@@ -215,7 +215,7 @@
                     type: 'POST',
                     data: {
                         id: $idCliente,
-                        idplaca: placa.replace('-','')
+                        idplaca: placa.replace('-', '')
                     },
                     async: true,
                     success: function(res) {
