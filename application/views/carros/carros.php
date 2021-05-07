@@ -5,7 +5,7 @@
 <div class="widget-box">
     <div class="widget-title">
         <span class="icon">
-            <i class="fas fa-user"></i>
+            <i class="fas fa-car"></i>
         </span>
         <h5>Carros</h5>
     </div>
